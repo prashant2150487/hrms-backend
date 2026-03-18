@@ -1,9 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny
-from .serializers import TenantRegistrationSerializer
-
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from .serializers import TenantRegistrationSerializer, UserMeSerializer
 
 class RegisterTenantView(APIView):
     permission_classes = [AllowAny]
@@ -31,4 +30,18 @@ class RegisterTenantView(APIView):
                 "error": serializer.errors,
             },
             status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+class UserMeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserMeSerializer(request.user)
+        return Response(
+            {
+                "data": serializer.data,
+                "success": True,
+            },
+            status=status.HTTP_200_OK,
         )

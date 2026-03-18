@@ -49,3 +49,32 @@ class TenantRegistrationSerializer(serializers.Serializer):
 
             return {"tenant": tenant, "user": user}
 
+
+class ModulePermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        from apps.auth_app.models import ModulePermission
+        model = ModulePermission
+        fields = ('id', 'module_name', 'action')
+
+
+class RoleSerializer(serializers.ModelSerializer):
+    permissions = ModulePermissionSerializer(many=True, read_only=True)
+
+    class Meta:
+        from apps.auth_app.models import Role
+        model = Role
+        fields = ('id', 'name', 'permissions')
+
+
+class UserMeSerializer(serializers.ModelSerializer):
+    role = RoleSerializer(read_only=True)
+    tenant_name = serializers.CharField(source='tenant.name', read_only=True)
+
+    class Meta:
+        model = User
+        fields = (
+            'id', 'email', 'tenant', 'tenant_name', 
+            'role', 'is_active', 'is_staff', 
+            'mfa_enabled', 'avatar_url', 'created_at'
+        )
+
