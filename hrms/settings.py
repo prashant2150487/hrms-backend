@@ -82,8 +82,8 @@ WSGI_APPLICATION = "hrms.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "new_database",
-        "USER": "root_user",
+        "NAME": "hrms_db",
+        "USER": "hrms_admin",
         "PASSWORD": "test@123",
         "HOST": "localhost",
         "PORT": "5432",
@@ -129,3 +129,15 @@ STATIC_URL = "static/"
 
 # Auth settings
 AUTH_USER_MODEL = "auth_app.User"
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
